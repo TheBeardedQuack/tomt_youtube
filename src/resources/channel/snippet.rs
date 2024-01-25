@@ -2,6 +2,7 @@ use crate::{
     error::YtError,
     resources::{
         channel::ChannelData as RscType,
+        thumbnail::ThumbnailList,
         Resource, RscPart
     }
 };
@@ -23,6 +24,10 @@ pub trait ChannelSnippet
     fn custom_url(
         &self
     ) -> impl std::future::Future<Output = Result<String, YtError>> + Send;
+    
+    fn thumbnails(
+        &self
+    ) -> impl std::future::Future<Output = Result<ThumbnailList, YtError>> + Send;
 }
 
 #[derive(Clone, Debug)]
@@ -33,6 +38,7 @@ pub struct SnippetData
     pub title: String,
     pub description: String,
     pub curstom_url: String,
+    pub thumbnails: ThumbnailList,
 }
 
 impl RscPart<RscType>
@@ -62,5 +68,11 @@ for SnippetData
         &self
     ) -> Result<String, YtError> {
         Ok(self.curstom_url.clone())
+    }
+
+    async fn thumbnails(
+        &self
+    ) -> Result<ThumbnailList, YtError> {
+        Ok(self.thumbnails.clone())
     }
 }

@@ -6,7 +6,9 @@ use crate::{
             indirect::ChannelRef,
             ChannelData as RscType,
             ChannelSnippet, SnippetData
-        }, Resource, RscId, RscPart
+        },
+        thumbnail::ThumbnailList,
+        Resource, RscId, RscPart,
     },
 };
 
@@ -51,6 +53,13 @@ for SnippetRef<'_>
     ) -> Result<String, YtError> {
         self.clone().await?
             .custom_url().await
+    }
+
+    async fn thumbnails(
+        &self
+    ) -> Result<ThumbnailList, YtError> {
+        self.clone().await?
+            .thumbnails().await
     }
 }
 
