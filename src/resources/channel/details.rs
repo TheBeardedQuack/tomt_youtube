@@ -22,6 +22,7 @@ pub trait ChannelDetails
 #[derive(Deserialize, Serialize)]
 pub struct DetailsData
 {
+    #[serde(rename = "relatedPlaylists")]
     pub playlists: SpecialPlaylists,
 }
 
