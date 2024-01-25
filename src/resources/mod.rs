@@ -1,6 +1,7 @@
 use std::hash::Hash;
 
 pub mod channel;
+pub mod thumbnail;
 pub mod playlist;
 
 pub trait Resource:
