@@ -46,11 +46,11 @@ for SnippetRef<'_>
             .description().await
     }
 
-    async fn curstom_url(
+    async fn custom_url(
         &self
     ) -> Result<String, YtError> {
         self.clone().await?
-            .curstom_url().await
+            .custom_url().await
     }
 }
 

@@ -20,7 +20,7 @@ pub trait ChannelSnippet
         &self
     ) -> impl std::future::Future<Output = Result<String, YtError>> + Send;
 
-    fn curstom_url(
+    fn custom_url(
         &self
     ) -> impl std::future::Future<Output = Result<String, YtError>> + Send;
 }
@@ -58,7 +58,7 @@ for SnippetData
         Ok(self.description.clone())
     }
 
-    async fn curstom_url(
+    async fn custom_url(
         &self
     ) -> Result<String, YtError> {
         Ok(self.curstom_url.clone())
