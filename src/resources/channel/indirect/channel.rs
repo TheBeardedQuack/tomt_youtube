@@ -5,8 +5,15 @@ use crate::{
     error::YtError,
     resources::{
         channel::{
-            indirect::SnippetRef,
-            Channel, ChannelId, ChannelParts, ChannelSnippet,
+            indirect::{
+                DetailsRef,
+                SnippetRef,
+                StatsRef,
+            },
+            Channel, ChannelId, ChannelParts,
+            ChannelDetails,
+            ChannelSnippet,
+            ChannelStats,
         },
         Resource, RscId,
     },
@@ -54,6 +61,18 @@ for ChannelRef<'_> {
         &self
     ) -> impl Future<Output = Result<impl ChannelSnippet, YtError>> {
         SnippetRef::from(self.clone())
+    }
+
+    fn details(
+        &self
+    ) -> impl Future<Output = Result<impl ChannelDetails, YtError>> {
+        DetailsRef::from(self.clone())
+    }
+
+    fn stats(
+        &self
+    ) -> impl Future<Output = Result<impl ChannelStats, YtError>> {
+        StatsRef::from(self.clone())
     }
 }
 

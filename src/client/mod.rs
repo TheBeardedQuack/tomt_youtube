@@ -8,7 +8,9 @@ use std::{
 pub(crate) use container::*;
 
 use crate::{
-    auth::YouTubeAuth, error::{self, ResourceError, YtError}, resources::{
+    auth::YouTubeAuth,
+    error::{self, ResourceError, YtError},
+    resources::{
         channel::*,
         Resource,
     }

@@ -4,9 +4,7 @@ use crate::{
 };
 
 use super::{
-    Channel, ChannelId, ChannelParts,
-    ChannelSnippet, SnippetData,
-    DetailsData,
+    Channel, ChannelDetails, ChannelId, ChannelParts, ChannelSnippet, ChannelStats, DetailsData, SnippetData, StatsData
 };
 
 #[derive(Clone, Debug)]
@@ -15,6 +13,7 @@ pub struct ChannelData
     pub id: ChannelId,
     pub snippet: Option<SnippetData>,
     pub details: Option<DetailsData>,
+    pub stats: Option<StatsData>,
 }
 
 impl ChannelData
@@ -40,6 +39,24 @@ for ChannelData
     ) -> Result<impl ChannelSnippet, crate::error::YtError> {
         match &self.snippet {
             Some(snip) => Ok(snip.clone()),
+            None => Err(ResourceError::AccessedPartMissing)?,
+        }
+    }
+
+    async fn details(
+        &self
+    ) -> Result<impl ChannelDetails, crate::error::YtError> {
+        match &self.details {
+            Some(deets) => Ok(deets.clone()),
+            None => Err(ResourceError::AccessedPartMissing)?,
+        }
+    }
+
+    async fn stats(
+        &self
+    ) -> Result<impl ChannelStats, crate::error::YtError> {
+        match &self.stats {
+            Some(stats) => Ok(stats.clone()),
             None => Err(ResourceError::AccessedPartMissing)?,
         }
     }

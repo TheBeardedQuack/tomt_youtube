@@ -13,4 +13,10 @@ pub enum ChannelParts
 
     #[serde(rename = "contentDetails")]
     Details,
+
+    #[serde(rename = "statistics")]
+    Statistics,
+
+    #[serde(rename = "status")]
+    Status,
 }

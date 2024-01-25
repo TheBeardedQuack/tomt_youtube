@@ -6,3 +6,6 @@ pub use details::*;
 
 mod snippet;
 pub use snippet::*;
+
+mod stats;
+pub use stats::*;
