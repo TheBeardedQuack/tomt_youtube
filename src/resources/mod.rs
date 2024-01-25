@@ -1,6 +1,7 @@
 use std::hash::Hash;
 
 pub mod channel;
+pub mod playlist;
 
 pub trait Resource:
 {
@@ -23,13 +24,10 @@ pub trait RscId:
     ) -> &Self::Id;
 }
 
-pub trait RscPart
+pub trait RscPart<R: Resource>
 {
-    type ForRsc: Resource;
-    type Backing: RscPart<
-        ForRsc = Self::ForRsc
-    >;
+    type Backing: RscPart<R, Backing = Self::Backing>;
 
-    const PART_KEY: <Self::ForRsc as Resource>::PartKey;
+    const PART_KEY: R::PartKey;
     const PART_NAME: &'static str;
 }

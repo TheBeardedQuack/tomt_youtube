@@ -9,6 +9,9 @@ pub use channel_parts::*;
 mod data;
 pub use data::*;
 
+mod details;
+pub use details::*;
+
 mod id;
 pub use id::*;
 

@@ -6,10 +6,10 @@ use serde::{Deserialize, Serialize};
 #[derive(Hash, PartialEq)]
 #[derive(Deserialize, Serialize)]
 #[serde(transparent)]
-pub struct ChannelId(crate::IdType);
+pub struct PlaylistId(crate::IdType);
 
 impl<T> AsRef<T>
-for ChannelId
+for PlaylistId
 where crate::IdType: AsRef<T>
 {
     fn as_ref(
@@ -20,7 +20,7 @@ where crate::IdType: AsRef<T>
 }
 
 impl Deref
-for ChannelId
+for PlaylistId
 {
     type Target = crate::IdType;
 

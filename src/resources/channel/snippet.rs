@@ -1,8 +1,14 @@
-use crate::{error::YtError, resources::{Resource, RscPart}};
+use crate::{
+    error::YtError,
+    resources::{
+        channel::ChannelData as RscType,
+        Resource, RscPart
+    }
+};
 
 use serde::{Deserialize, Serialize};
 
-use super::ChannelData;
+type PartKey = <RscType as Resource>::PartKey;
 
 pub trait ChannelSnippet
 {
@@ -19,17 +25,6 @@ pub trait ChannelSnippet
     ) -> impl std::future::Future<Output = Result<String, YtError>> + Send;
 }
 
-impl<SnipT: ChannelSnippet> RscPart
-for SnipT {
-    type ForRsc = ChannelData;
-    type Backing = SnippetData;
-
-    const PART_KEY: <Self::ForRsc as Resource>::PartKey =
-        <Self::ForRsc as Resource>::PartKey::Snippet;
-
-    const PART_NAME: &'static str = "snippet";
-}
-
 #[derive(Clone, Debug)]
 #[derive(PartialEq)]
 #[derive(Deserialize, Serialize)]
@@ -38,6 +33,14 @@ pub struct SnippetData
     pub title: String,
     pub description: String,
     pub curstom_url: String,
+}
+
+impl RscPart<RscType>
+for SnippetData {
+    type Backing = SnippetData;
+
+    const PART_KEY: PartKey = PartKey::Snippet;
+    const PART_NAME: &'static str = "snippet";
 }
 
 impl ChannelSnippet

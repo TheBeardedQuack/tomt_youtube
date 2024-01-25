@@ -3,11 +3,10 @@ use crate::{
     error::{ResourceError, YtError},
     resources::{
         channel::{
-            ChannelSnippet, SnippetData,
             indirect::ChannelRef,
-        },
-        RscId,
-        RscPart
+            ChannelData as RscType,
+            ChannelSnippet, SnippetData
+        }, Resource, RscId, RscPart
     },
 };
 
@@ -17,9 +16,18 @@ use std::{
     task::{ready, Poll},
 };
 
+type PartKey = <RscType as Resource>::PartKey;
 
 #[derive(Clone, Debug)]
 pub struct SnippetRef<'yt>(ChannelRef<'yt>);
+
+impl RscPart<RscType>
+for SnippetRef<'_> {
+    type Backing = SnippetData;
+
+    const PART_NAME: &'static str = "snippet";
+    const PART_KEY: PartKey = PartKey::Snippet;
+}
 
 impl ChannelSnippet
 for SnippetRef<'_>

@@ -5,15 +5,16 @@ use crate::{
 
 use super::{
     Channel, ChannelId, ChannelParts,
-    ChannelSnippet, SnippetData
+    ChannelSnippet, SnippetData,
+    DetailsData,
 };
 
 #[derive(Clone, Debug)]
-#[derive(PartialEq)]
 pub struct ChannelData
 {
     pub id: ChannelId,
     pub snippet: Option<SnippetData>,
+    pub details: Option<DetailsData>,
 }
 
 impl ChannelData
