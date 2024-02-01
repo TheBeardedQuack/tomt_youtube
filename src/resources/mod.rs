@@ -1,10 +1,15 @@
 use std::hash::Hash;
 
 pub mod channel;
-pub mod thumbnail;
+pub mod channel_ref;
+
 pub mod playlist;
 
+// Parts of resources
+pub mod thumbnail;
+
 pub trait Resource:
+    std::fmt::Debug
 {
     type Id: Clone + PartialEq + Hash;
     type PartKey: Copy + Clone + PartialEq;
@@ -15,17 +20,14 @@ pub trait Resource:
     >;
 
     const RSC_NAME: &'static str;
-}
 
-pub trait RscId:
-    Resource
-{
     fn id(
         &self
     ) -> &Self::Id;
 }
 
-pub trait RscPart<R: Resource>
+pub trait RscPart<R: Resource>:
+    std::fmt::Debug
 {
     type Backing: RscPart<R, Backing = Self::Backing>;
 
