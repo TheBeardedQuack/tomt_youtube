@@ -2,12 +2,14 @@ pub(crate) const PANIC_LOCK_POISONED: &str = "Lock poisoned";
 
 #[derive(Debug)]
 #[derive(thiserror::Error)]
-#[error("Error occured in library 'tomt_youtube'.\n{}", *self)]
+#[error("Error occured in library 'tomt_youtube'.\n{}", self)]
 pub enum YtError
 {
     Resource(#[from] ResourceError),
     Query(#[from] QueryError),
-    Library(#[from] LibraryError),
+
+    #[error("{}", *self)]
+    Reqwest(#[from] reqwest::Error),
 }
 
 #[derive(Debug)]
@@ -18,15 +20,8 @@ pub enum ResourceError
     #[error("Attempted to access a resources field, which has not been set or fetched (treat as None)")]
     AccessedPartMissing,
 
-    Query(QueryError)
-}
-
-#[derive(Debug)]
-#[derive(thiserror::Error)]
-pub enum LibraryError
-{
-    #[error(transparent)]
-    Reqwest(reqwest::Error),
+    Query(#[from] QueryError),
+    Response(#[from] ResponseError),
 }
 
 #[derive(Debug)]
@@ -38,4 +33,12 @@ pub enum QueryError
 
     #[error("The provided object has too many populated fields reasonably determine what query to build")]
     TooManyParams
+}
+
+#[derive(Debug)]
+#[derive(thiserror::Error)]
+pub enum ResponseError
+{
+    #[error("Failed to parse JSON from response body: {}", self)]
+    JsonDeserialize(#[from] serde_json::Error),
 }
