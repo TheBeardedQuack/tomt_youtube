@@ -26,18 +26,6 @@ impl<'yt> DetailsRef<'yt>
         Ok(deets.playlists)
     }
 
-    pub async fn run(
-        &self
-    ) -> Result<ChannelDetails, YtError> {
-        self.0.client().touch(self.0.id(), Self::PART_KEY);
-
-        let chan_data = self.0.client().fetch(self.0.id()).await?;
-        match &chan_data.details {
-            Some(snip) => Ok(snip.clone()),
-            None => Err(ResourceError::AccessedPartMissing)?,
-        }
-    }
-
     pub async fn fetch(
         &self
     ) -> Result<ChannelDetails, YtError> {
@@ -52,7 +40,8 @@ impl<'yt> DetailsRef<'yt>
 }
 
 impl RscPart<RscType>
-for DetailsRef<'_> {
+for DetailsRef<'_>
+{
     type Backing = ChannelDetails;
 
     const PART_NAME: &'static str = "contentDetails";
