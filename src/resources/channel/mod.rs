@@ -13,6 +13,9 @@ pub use channel_snippet::*;
 mod channel_statistics;
 pub use channel_statistics::*;
 
+mod channel_status;
+pub use channel_status::*;
+
 use super::Resource;
 use serde::Deserialize;
 
@@ -29,6 +32,8 @@ pub struct Channel
 
     #[serde(rename = "statistics")]
     pub stats: Option<ChannelStats>,
+
+    pub status: Option<ChannelStatus>,
 }
 
 impl Channel
@@ -41,6 +46,7 @@ impl Channel
             details: Default::default(),
             snippet: Default::default(),
             stats: Default::default(),
+            status: Default::default(),
         }
     }
 
@@ -52,6 +58,7 @@ impl Channel
             self.details.as_ref().map(|_| ChannelParts::Details),
             self.snippet.as_ref().map(|_| ChannelParts::Snippet),
             self.stats.as_ref().map(|_| ChannelParts::Statistics),
+            self.status.as_ref().map(|_| ChannelParts::Status),
         ]
         .into_iter()
         .flatten()
@@ -71,6 +78,7 @@ impl Channel
             self.details = rhs.details.or(self.details.take());
             self.snippet = rhs.snippet.or(self.snippet.take());
             self.stats = rhs.stats.or(self.stats.take());
+            self.status = rhs.status.or(self.status.take());
 
             Ok(self)
         }

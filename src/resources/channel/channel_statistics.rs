@@ -1,4 +1,4 @@
-use serde::{de::Visitor, Deserialize, Deserializer, Serialize};
+use serde::Deserialize;
 
 use crate::resources::{
     channel::Channel as RscType,
