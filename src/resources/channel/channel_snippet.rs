@@ -14,8 +14,12 @@ type PartKey = <RscType as Resource>::PartKey;
 pub struct ChannelSnippet
 {
     pub title: String,
+    
     pub description: String,
-    pub custom_url: Option<String>,
+    
+    #[serde(rename = "customUrl")]
+    pub custom_url: String,
+
     pub thumbnails: ThumbnailList,
 }
 

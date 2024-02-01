@@ -35,7 +35,7 @@ impl<'yt> SnippetRef<'yt>
 
     pub async fn custom_url(
         &self
-    ) -> Result<Option<String>, YtError> {
+    ) -> Result<String, YtError> {
         let snip = self.fetch().await?;
         Ok(snip.custom_url)
     }
