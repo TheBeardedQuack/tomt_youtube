@@ -1,11 +1,11 @@
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use std::collections::HashMap;
 
 pub type ThumbnailList = HashMap<String, Thumbnail>;
 
 #[derive(Clone, Debug)]
 #[derive(PartialEq)]
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize)]
 pub struct Thumbnail
 {
     pub width: u32,
