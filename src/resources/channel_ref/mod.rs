@@ -7,6 +7,9 @@ pub use chanref_snippet::*;
 mod chanref_statistics;
 pub use chanref_statistics::*;
 
+mod chanref_status;
+pub use chanref_status::*;
+
 use crate::{
     client::{RscHolder, YouTubeClient},
     error::YtError,
