@@ -6,6 +6,7 @@ pub mod channel_ref;
 pub mod playlist;
 
 // Parts of resources
+pub mod privacy;
 pub mod thumbnail;
 
 pub trait Resource:
