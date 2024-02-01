@@ -20,7 +20,7 @@ use serde::Deserialize;
 #[derive(Deserialize)]
 pub struct Channel
 {
-    pub id: ChannelId,
+    id: ChannelId,
 
     #[serde(rename = "contentDetails")]
     pub details: Option<ChannelDetails>,

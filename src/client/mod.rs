@@ -125,8 +125,8 @@ impl YouTubeClient
 
         // Merge response data into existing data
         for item in page.items.iter() {
-            channels_lock.entry(item.id.clone())
-                .or_insert_with(|| Channel::with_id(item.id.clone()))
+            channels_lock.entry(item.id().clone())
+                .or_insert_with(|| Channel::with_id(item.id().clone()))
                 .update(item.clone())
                 .ok();
         }
@@ -196,7 +196,7 @@ for YouTubeClient
          match self.fetch_channels()
             .await?.items
             .into_iter()
-            .find(|ch| ch.id.eq(rsc_id))
+            .find(|ch| rsc_id.eq(ch.id()))
         {
             Some(data) => Ok(data),
             None => Err(ResourceError::AccessedPartMissing)?,
