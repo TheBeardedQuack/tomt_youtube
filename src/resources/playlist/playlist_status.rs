@@ -3,6 +3,7 @@ use crate::resources::{
         Playlist as RscType,
         PlaylistParts,
     },
+    privacy::Privacy,
     Resource, RscPart,
 };
 
@@ -12,17 +13,17 @@ type PartKey = <RscType as Resource>::PartKey;
 
 #[derive(Clone, Debug)]
 #[derive(Deserialize)]
-pub struct PlaylistDetails
+pub struct PlaylistStatus
 {
-    #[serde(rename = "itemCount")]
-    pub video_count: u32,
+    #[serde(rename = "privacyStatus")]
+    pub privacy: Privacy
 }
 
 impl RscPart<RscType>
-for PlaylistDetails
+for PlaylistStatus
 {
     type Backing = Self;
 
-    const PART_KEY: PartKey = PlaylistParts::Details;
-    const PART_NAME: &'static str = "contentDetails";
+    const PART_KEY: PartKey = PlaylistParts::Status;
+    const PART_NAME: &'static str = "status";
 }
