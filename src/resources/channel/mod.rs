@@ -54,11 +54,11 @@ impl Channel
         &self
     ) -> Vec<<Self as Resource>::PartKey> {
         [
-            Some(ChannelParts::Id),
-            self.details.as_ref().map(|_| ChannelParts::Details),
-            self.snippet.as_ref().map(|_| ChannelParts::Snippet),
-            self.stats.as_ref().map(|_| ChannelParts::Statistics),
-            self.status.as_ref().map(|_| ChannelParts::Status),
+            Some(ChannelPart::Id),
+            self.details.as_ref().map(|_| ChannelPart::Details),
+            self.snippet.as_ref().map(|_| ChannelPart::Snippet),
+            self.stats.as_ref().map(|_| ChannelPart::Statistics),
+            self.status.as_ref().map(|_| ChannelPart::Status),
         ]
         .into_iter()
         .flatten()
@@ -89,7 +89,7 @@ impl Resource
 for Channel
 {
     type Id = ChannelId;
-    type PartKey = ChannelParts;
+    type PartKey = ChannelPart;
     type Backing = Self;
 
     const RSC_NAME: &'static str = "channels";

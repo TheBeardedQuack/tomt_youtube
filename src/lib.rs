@@ -29,7 +29,7 @@ mod test
 
         let channel_data = channel.with_details()
             .with_snippet()
-            .with_stats()
+            .with_statistics()
             .fetch().await?;
 
         println!("ChannelData = {channel_data:?}");

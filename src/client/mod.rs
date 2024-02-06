@@ -12,7 +12,6 @@ use crate::{
          YtError,
          PANIC_LOCK_POISONED,
     },
-    request::channel::*,
     resources::{
         channel::*,
         Resource,
@@ -63,13 +62,6 @@ impl YouTubeClient
 
             channels: Default::default(),
         })
-    }
-
-    pub fn channel(
-        &self,
-        id: ChannelId
-    ) -> ChannelRequest {
-        ChannelRequest::new(self, id)
     }
 
     async fn fetch_channels(
@@ -181,13 +173,13 @@ for YouTubeClient
                 .all(|p| current.contains(p))
             {
                 // Touch resource so it gets refreshed when the next request NEEDS to go out
-                self.touch(rsc_id, ChannelParts::Id);
+                self.touch(rsc_id, ChannelPart::Id);
                 return Ok(channel);
             }
         }
 
         // Touch resource so it gets refreshed when the next request NEEDS to go out
-        self.touch(rsc_id, ChannelParts::Id);
+        self.touch(rsc_id, ChannelPart::Id);
 
         { // Immediately yield to allow other ID's and params to be requested, then issue the actual request
             struct Yield{yielded: bool}

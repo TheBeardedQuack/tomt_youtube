@@ -1,7 +1,7 @@
 use crate::resources::{
     channel::{
         Channel as RscType,
-        ChannelParts,
+        ChannelPart,
     },
     privacy::Privacy,
     Resource, RscPart,
@@ -24,6 +24,6 @@ for ChannelStatus
 {
     type Backing = Self;
 
-    const PART_KEY: PartKey = ChannelParts::Snippet;
+    const PART_KEY: PartKey = ChannelPart::Snippet;
     const PART_NAME: &'static str = "status";
 }

@@ -5,7 +5,7 @@ use serde::Deserialize;
 #[derive(Copy, Clone, Debug)]
 #[derive(PartialEq, Hash)]
 #[derive(Deserialize)]
-pub enum ChannelParts
+pub enum ChannelPart
 {
     #[serde(rename = "id")]
     Id,
@@ -24,18 +24,40 @@ pub enum ChannelParts
 }
 
 impl Display
-for ChannelParts
+for ChannelPart
 {
     fn fmt(
         &self,
         f: &mut std::fmt::Formatter<'_>
     ) -> std::fmt::Result {
+        write!(f, "{self}")
+    }
+}
+
+impl AsRef<str>
+for ChannelPart
+{
+    fn as_ref(
+        &self
+    ) -> &'static str {
         match self {
-            ChannelParts::Id => write!(f, "id"),
-            ChannelParts::Snippet => write!(f, "snippet"),
-            ChannelParts::Details => write!(f, "contentDetails"),
-            ChannelParts::Statistics => write!(f, "statistics"),
-            ChannelParts::Status => write!(f, "status"),
+            ChannelPart::Id => "id",
+            ChannelPart::Snippet => "snippet",
+            ChannelPart::Details => "contentDetails",
+            ChannelPart::Statistics => "statistics",
+            ChannelPart::Status => "status",
         }
+    }
+}
+
+impl std::ops::Deref
+for ChannelPart
+{
+    type Target = str;
+
+    fn deref(
+        &self
+    ) -> &Self::Target {
+        self.as_ref()
     }
 }

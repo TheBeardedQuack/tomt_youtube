@@ -1,114 +1,127 @@
-mod chan_details_req;
-pub use chan_details_req::*;
-
-mod chan_snippet_req;
-pub use chan_snippet_req::*;
-
-mod chan_statistics_req;
-pub use chan_statistics_req::*;
-
-mod chan_status_req;
-pub use chan_status_req::*;
-
 use crate::{
-    client::{RscHolder, YouTubeClient},
-    error::YtError,
     resources::{
         channel::{
             Channel,
             ChannelId,
-            ChannelParts,
+            ChannelPart,
         },
         Resource,
-    }
+    },
+    request::RscRequest,
 };
 
+mod into_ids;
+pub use into_ids::*;
+
+mod into_parts;
+pub use into_parts::*;
+
 #[derive(Clone, Debug)]
-pub struct ChannelRequest<'a>
+pub struct ChannelRequest
 {
-    client: &'a YouTubeClient,
-    id: ChannelId,
+    ids: Vec<ChannelId>,
+    parts: Vec<ChannelPart>,
 }
 
-impl<'yt> ChannelRequest<'yt>
+impl ChannelRequest
 {
-    pub fn new(
-        client: &'yt YouTubeClient,
-        id: ChannelId
-    ) -> Self {
-        Self{
-            client,
-            id,
+    pub fn new<
+        Ids: IntoIds,
+        Parts: IntoParts,
+    > (
+        id_list: Ids,
+        part_list: Option<Parts>
+    ) -> Option<Self> {
+        let ids = id_list.to_ids();
+
+        match ids.is_empty() {
+            true => None,
+            false => {
+                let parts = part_list.map(|p| p.to_parts().collect()).unwrap_or_default();
+                let mut result = Self{ids, parts};
+                result.with_parts(ChannelPart::Id).clean();
+
+                Some(result)
+            }
         }
     }
 
-    pub fn client(
-        &self
-    ) -> &'yt YouTubeClient {
-        self.client
-    }
+    fn clean(
+        &mut self
+    ) -> &mut Self {
+        self.ids.sort_by(|a, b| a.cmp(b));
+        self.ids.dedup();
 
-    pub async fn fetch(
-        &self
-    ) -> Result<Channel, YtError> {
-        self.client.touch(self.id(), ChannelParts::Id);
-        self.client.fetch(self.id()).await
-    }
-}
+        self.parts.sort_by(|a, b| a.cmp(b));
+        self.parts.dedup();
 
-impl Resource
-for ChannelRequest<'_>
-{
-    type Id = ChannelId;
-    type PartKey = ChannelParts;
-    type Backing = Channel;
-
-    const RSC_NAME: &'static str = "channels";
-
-    fn id(
-        &self
-    ) -> &<Self as Resource>::Id {
-        &self.id
-    }
-}
-
-impl ChannelRequest<'_> {
-    pub fn snippet(
-        &self
-    ) -> SnippetRequest {
-        SnippetRequest::from(self.clone())
-    }
-
-    pub fn details(
-        &self
-    ) -> DetailsRequest {
-        DetailsRequest::from(self.clone())
-    }
-
-    pub fn stats(
-        &self
-    ) -> StatsRequest {
-        StatsRequest::from(self.clone())
-    }
-
-    pub fn with_snippet(
-        &self
-    ) -> &Self {
-        self.client().touch(self.id(), ChannelParts::Snippet);
         self
     }
 
+    pub fn with_ids<Ids: IntoIds>(
+        &mut self,
+        id_list: Ids
+    ) -> &mut Self {
+        for id in id_list.to_ids() {
+            if !self.ids.contains(&id) {
+                self.ids.push(id);
+            }
+        }
+        self
+    }
+
+    pub fn with_parts<Parts: IntoParts>(
+        &mut self,
+        part_list: Parts
+    ) -> &mut Self {
+        for p in part_list.to_parts() {
+            if ! self.parts.contains(&p) {
+                self.parts.push(p);
+            }
+        }
+        self
+    }
+
+    #[inline]
     pub fn with_details(
-        &self
-    ) -> &Self {
-        self.client().touch(self.id(), ChannelParts::Details);
-        self
+        &mut self
+    ) -> &mut Self {
+        self.with_parts(ChannelPart::Details)
     }
 
-    pub fn with_stats(
+    #[inline]
+    pub fn with_snippet(
+        &mut self
+    ) -> &mut Self {
+        self.with_parts(ChannelPart::Snippet)
+    }
+
+    #[inline]
+    pub fn with_statistics(
+        &mut self
+    ) -> &mut Self {
+        self.with_parts(ChannelPart::Statistics)
+    }
+}
+
+impl RscRequest<Channel>
+for ChannelRequest
+{
+    fn rsc_name(
         &self
-    ) -> &Self {
-        self.client().touch(self.id(), ChannelParts::Statistics);
-        self
+    ) -> &'static str {
+        <Channel as Resource>::RSC_NAME
+    }
+
+    fn ids(
+        &self
+    ) -> &Vec<<Channel as Resource>::Id> {
+        &self.ids
+    }
+
+    fn parts(
+        &self
+    ) -> &Vec<<Channel as Resource>::PartKey> {
+        &self.parts
     }
 }
