@@ -1,13 +1,9 @@
 use crate::{
-    resource::{
-        channel::{
-            Channel,
-            ChannelId,
-            ChannelPart,
-        },
-        Resource,
-    },
     request::RscRequest,
+    resource::{
+        playlist::{Playlist, PlaylistId, PlaylistPart},
+        Resource
+    },
 };
 
 mod into_ids;
@@ -17,13 +13,13 @@ mod into_parts;
 pub use into_parts::*;
 
 #[derive(Clone, Debug)]
-pub struct ChannelRequest
+pub struct PlaylistRequest
 {
-    ids: Vec<ChannelId>,
-    parts: Vec<ChannelPart>,
+    ids: Vec<PlaylistId>,
+    parts: Vec<PlaylistPart>,
 }
 
-impl ChannelRequest
+impl PlaylistRequest
 {
     pub fn new<
         Ids: IntoIds,
@@ -32,14 +28,14 @@ impl ChannelRequest
         id_list: Ids,
         part_list: Option<Parts>
     ) -> Option<Self> {
-        let ids = id_list.to_ids();
+        let ids: Vec<_> = id_list.to_ids().collect();
 
         match ids.is_empty() {
             true => None,
             false => {
                 let parts = part_list.map(|p| p.to_parts().collect()).unwrap_or_default();
                 let mut result = Self{ids, parts};
-                result.with_parts(ChannelPart::Id).clean();
+                result.with_parts(PlaylistPart::Id).clean();
 
                 Some(result)
             }
@@ -51,9 +47,11 @@ impl ChannelRequest
     ) -> &mut Self {
         self.ids.sort_by(|a, b| a.cmp(b));
         self.ids.dedup();
+        self.ids.shrink_to_fit();
 
         self.parts.sort_by(|a, b| a.cmp(b));
         self.parts.dedup();
+        self.parts.shrink_to_fit();
 
         self
     }
@@ -86,42 +84,35 @@ impl ChannelRequest
     pub fn with_details(
         &mut self
     ) -> &mut Self {
-        self.with_parts(ChannelPart::Details)
+        self.with_parts(PlaylistPart::Details)
     }
 
     #[inline]
     pub fn with_snippet(
         &mut self
     ) -> &mut Self {
-        self.with_parts(ChannelPart::Snippet)
-    }
-
-    #[inline]
-    pub fn with_statistics(
-        &mut self
-    ) -> &mut Self {
-        self.with_parts(ChannelPart::Statistics)
+        self.with_parts(PlaylistPart::Snippet)
     }
 }
 
-impl RscRequest<Channel>
-for ChannelRequest
+impl RscRequest<Playlist>
+for PlaylistRequest
 {
     fn rsc_name(
         &self
     ) -> &'static str {
-        <Channel as Resource>::RSC_NAME
+        <Playlist as Resource>::RSC_NAME
     }
 
     fn ids(
         &self
-    ) -> &Vec<<Channel as Resource>::Id> {
+    ) -> &Vec<<Playlist as Resource>::Id> {
         &self.ids
     }
 
     fn parts(
         &self
-    ) -> &Vec<<Channel as Resource>::PartKey> {
+    ) -> &Vec<<Playlist as Resource>::PartKey> {
         &self.parts
     }
 

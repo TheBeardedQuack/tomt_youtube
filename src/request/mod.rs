@@ -1,6 +1,7 @@
 pub mod channel;
+pub mod playlist;
 
-use crate::resources::Resource;
+use crate::resource::Resource;
 
 pub trait RscRequest<Rsc: Resource>
 {
@@ -17,4 +18,8 @@ pub trait RscRequest<Rsc: Resource>
     fn parts(
         &self
     ) -> &Vec<Rsc::PartKey>;
+
+    fn page(
+        &self
+    ) -> Option<String>;
 }

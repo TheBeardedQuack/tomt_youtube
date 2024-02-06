@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::resources::{
+use crate::resource::{
     channel::Channel as RscType,
     Resource, RscPart
 };

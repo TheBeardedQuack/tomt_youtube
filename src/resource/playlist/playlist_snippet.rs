@@ -1,10 +1,10 @@
 use serde::Deserialize;
 
-use crate::resources::{
+use crate::resource::{
     channel::ChannelId,
     playlist::{
         Playlist as RscType,
-        PlaylistParts,
+        PlaylistPart,
     },
     thumbnail::ThumbnailList,
     Resource, RscPart,
@@ -34,6 +34,6 @@ for PlaylistSnippet
 {
     type Backing = Self;
 
-    const PART_KEY: PartKey = PlaylistParts::Snippet;
+    const PART_KEY: PartKey = PlaylistPart::Snippet;
     const PART_NAME: &'static str = "snippet";
 }

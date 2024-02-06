@@ -1,9 +1,11 @@
+use std::ops::Deref;
+
 use serde::Deserialize;
 
 #[derive(Clone, Copy, Debug)]
 #[derive(Hash, PartialEq, Eq)]
 #[derive(Deserialize)]
-pub enum PlaylistParts
+pub enum PlaylistPart
 {
     #[serde(rename = "id")]
     Id,
@@ -19,17 +21,29 @@ pub enum PlaylistParts
 }
 
 impl std::fmt::Display
-for PlaylistParts
+for PlaylistPart
 {
     fn fmt(
         &self,
         f: &mut std::fmt::Formatter<'_>
     ) -> std::fmt::Result {
+        write!(f, "{}", self.deref())
+    }
+}
+
+impl Deref
+for PlaylistPart
+{
+    type Target = str;
+
+    fn deref(
+        &self
+    ) -> &'static Self::Target {
         match self {
-            PlaylistParts::Id => write!(f, "id"),
-            PlaylistParts::Details => write!(f, "contentDetails"),
-            PlaylistParts::Snippet => write!(f, "snippet"),
-            PlaylistParts::Status => write!(f, "status"),
+            PlaylistPart::Id => "id",
+            PlaylistPart::Details => "contentDetails",
+            PlaylistPart::Snippet => "snippet",
+            PlaylistPart::Status => "status",
         }
     }
 }

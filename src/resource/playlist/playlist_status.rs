@@ -1,7 +1,7 @@
-use crate::resources::{
+use crate::resource::{
     playlist::{
         Playlist as RscType,
-        PlaylistParts,
+        PlaylistPart,
     },
     privacy::Privacy,
     Resource, RscPart,
@@ -24,6 +24,6 @@ for PlaylistStatus
 {
     type Backing = Self;
 
-    const PART_KEY: PartKey = PlaylistParts::Status;
+    const PART_KEY: PartKey = PlaylistPart::Status;
     const PART_NAME: &'static str = "status";
 }

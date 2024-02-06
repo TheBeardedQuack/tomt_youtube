@@ -1,4 +1,7 @@
-use crate::resources::Resource;
+use crate::{
+    resource::Resource,
+    page::{PageInfo, PageToken},
+};
 use serde::Deserialize;
 
 #[derive(Clone, Debug)]
@@ -11,19 +14,8 @@ pub struct ResponsePacket<DataT: Resource>
     pub page_info: Option<PageInfo>,
 
     #[serde(rename = "nextPageToken")]
-    pub next_page: Option<String>,
+    pub next_page: Option<PageToken>,
 
     #[serde(rename = "prevPageToken")]
-    pub prev_page: Option<String>,
-}
-
-#[derive(Clone, Debug)]
-#[derive(Deserialize)]
-pub struct PageInfo
-{
-    #[serde(rename = "totalResults")]
-    pub items_total: isize,
-
-    #[serde(rename = "resultsPerPage")]
-    pub items_per_page: isize,
+    pub prev_page: Option<PageToken>,
 }

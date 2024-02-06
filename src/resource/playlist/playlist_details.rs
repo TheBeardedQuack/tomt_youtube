@@ -1,7 +1,7 @@
-use crate::resources::{
+use crate::resource::{
     playlist::{
         Playlist as RscType,
-        PlaylistParts,
+        PlaylistPart,
     },
     Resource, RscPart,
 };
@@ -23,6 +23,6 @@ for PlaylistDetails
 {
     type Backing = Self;
 
-    const PART_KEY: PartKey = PlaylistParts::Details;
+    const PART_KEY: PartKey = PlaylistPart::Details;
     const PART_NAME: &'static str = "contentDetails";
 }

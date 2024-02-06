@@ -12,7 +12,7 @@ use crate::{
          YtError,
          PANIC_LOCK_POISONED,
     },
-    resources::{
+    resource::{
         channel::*,
         Resource,
     }
@@ -77,7 +77,7 @@ impl YouTubeClient
                 let mut channels_wlock = self.channels.write().expect(PANIC_LOCK_POISONED);
 
                 let ids = channels_wlock.pending_ids()
-                    .map(ToString::to_string)
+                    .map(|id| id.to_string())
                     .collect::<Vec<_>>()
                     .join(",");
 

@@ -1,10 +1,11 @@
 pub mod auth;
 pub mod client;
 pub mod error;
-pub mod resources;
+pub mod page;
+pub mod resource;
 pub mod request;
 
-pub(crate) type IdType = String;
+mod id;
 
 #[cfg(test)]
 mod test
@@ -13,7 +14,7 @@ mod test
         auth::YouTubeAuth,
         client::YouTubeClient,
         error::YtError,
-        resources::channel::ChannelId,
+        resource::channel::ChannelId,
     };
 
     #[cfg(debug_assertions)]

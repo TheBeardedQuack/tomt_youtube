@@ -1,8 +1,7 @@
+pub use crate::id::ChannelId;
+
 mod channel_details;
 pub use channel_details::*;
-
-mod channel_id;
-pub use channel_id::*;
 
 mod channel_parts;
 pub use channel_parts::*;

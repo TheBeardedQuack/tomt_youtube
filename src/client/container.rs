@@ -5,7 +5,7 @@ use std::{
 
 use crate::{
     error::YtError,
-    resources::Resource,
+    resource::Resource,
 };
 
 pub trait RscHolder<R: Resource>

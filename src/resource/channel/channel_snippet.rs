@@ -1,4 +1,4 @@
-use crate::resources::{
+use crate::resource::{
     channel::Channel as RscType,
     thumbnail::ThumbnailList,
     Resource, RscPart
