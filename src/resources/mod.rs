@@ -1,7 +1,6 @@
 use std::hash::Hash;
 
 pub mod channel;
-pub mod channel_ref;
 
 pub mod playlist;
 

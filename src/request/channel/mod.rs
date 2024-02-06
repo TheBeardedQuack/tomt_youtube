@@ -1,14 +1,14 @@
-mod chanref_details;
-pub use chanref_details::*;
+mod chan_details_req;
+pub use chan_details_req::*;
 
-mod chanref_snippet;
-pub use chanref_snippet::*;
+mod chan_snippet_req;
+pub use chan_snippet_req::*;
 
-mod chanref_statistics;
-pub use chanref_statistics::*;
+mod chan_statistics_req;
+pub use chan_statistics_req::*;
 
-mod chanref_status;
-pub use chanref_status::*;
+mod chan_status_req;
+pub use chan_status_req::*;
 
 use crate::{
     client::{RscHolder, YouTubeClient},
@@ -24,13 +24,13 @@ use crate::{
 };
 
 #[derive(Clone, Debug)]
-pub struct ChannelRef<'a>
+pub struct ChannelRequest<'a>
 {
     client: &'a YouTubeClient,
     id: ChannelId,
 }
 
-impl<'yt> ChannelRef<'yt>
+impl<'yt> ChannelRequest<'yt>
 {
     pub fn new(
         client: &'yt YouTubeClient,
@@ -57,7 +57,7 @@ impl<'yt> ChannelRef<'yt>
 }
 
 impl Resource
-for ChannelRef<'_>
+for ChannelRequest<'_>
 {
     type Id = ChannelId;
     type PartKey = ChannelParts;
@@ -72,23 +72,23 @@ for ChannelRef<'_>
     }
 }
 
-impl ChannelRef<'_> {
+impl ChannelRequest<'_> {
     pub fn snippet(
         &self
-    ) -> SnippetRef {
-        SnippetRef::from(self.clone())
+    ) -> SnippetRequest {
+        SnippetRequest::from(self.clone())
     }
 
     pub fn details(
         &self
-    ) -> DetailsRef {
-        DetailsRef::from(self.clone())
+    ) -> DetailsRequest {
+        DetailsRequest::from(self.clone())
     }
 
     pub fn stats(
         &self
-    ) -> StatsRef {
-        StatsRef::from(self.clone())
+    ) -> StatsRequest {
+        StatsRequest::from(self.clone())
     }
 
     pub fn with_snippet(

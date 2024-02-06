@@ -7,17 +7,17 @@ use crate::{
             ChannelDetails,
             SpecialPlaylists,
         },
-        channel_ref::ChannelRef,
         Resource, RscPart
     },
+    request::channel::ChannelRequest,
 };
 
 type PartKey = <RscType as Resource>::PartKey;
 
 #[derive(Clone, Debug)]
-pub struct DetailsRef<'yt>(ChannelRef<'yt>);
+pub struct DetailsRequest<'yt>(ChannelRequest<'yt>);
 
-impl<'yt> DetailsRef<'yt>
+impl<'yt> DetailsRequest<'yt>
 {
     pub async fn special_playlists(
         &self
@@ -40,7 +40,7 @@ impl<'yt> DetailsRef<'yt>
 }
 
 impl RscPart<RscType>
-for DetailsRef<'_>
+for DetailsRequest<'_>
 {
     type Backing = ChannelDetails;
 
@@ -48,11 +48,11 @@ for DetailsRef<'_>
     const PART_KEY: PartKey = PartKey::Details;
 }
 
-impl<'yt> From<ChannelRef<'yt>>
-for DetailsRef<'yt>
+impl<'yt> From<ChannelRequest<'yt>>
+for DetailsRequest<'yt>
 {
     fn from(
-        value: ChannelRef<'yt>
+        value: ChannelRequest<'yt>
     ) -> Self {
         Self(value)
     }

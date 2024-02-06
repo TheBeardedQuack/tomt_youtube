@@ -2,6 +2,7 @@ pub mod auth;
 pub mod client;
 pub mod error;
 pub mod resources;
+pub mod request;
 
 pub(crate) type IdType = String;
 

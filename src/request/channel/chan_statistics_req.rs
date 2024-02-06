@@ -6,17 +6,17 @@ use crate::{
             Channel as RscType,
             ChannelStats,
         },
-        channel_ref::ChannelRef,
         Resource, RscPart,
     },
+    request::channel::ChannelRequest,
 };
 
 type PartKey = <RscType as Resource>::PartKey;
 
 #[derive(Clone, Debug)]
-pub struct StatsRef<'yt>(ChannelRef<'yt>);
+pub struct StatsRequest<'yt>(ChannelRequest<'yt>);
 
-impl<'yt> StatsRef<'yt>
+impl<'yt> StatsRequest<'yt>
 {
     pub async fn hide_subs_count(
         &self
@@ -60,18 +60,18 @@ impl<'yt> StatsRef<'yt>
 }
 
 impl RscPart<RscType>
-for StatsRef<'_> {
+for StatsRequest<'_> {
     type Backing = ChannelStats;
 
     const PART_NAME: &'static str = "statistic";
     const PART_KEY: PartKey = PartKey::Statistics;
 }
 
-impl<'yt> From<ChannelRef<'yt>>
-for StatsRef<'yt>
+impl<'yt> From<ChannelRequest<'yt>>
+for StatsRequest<'yt>
 {
     fn from(
-        value: ChannelRef<'yt>
+        value: ChannelRequest<'yt>
     ) -> Self {
         Self(value)
     }

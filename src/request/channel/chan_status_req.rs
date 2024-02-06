@@ -6,18 +6,18 @@ use crate::{
             Channel as RscType,
             ChannelStatus,
         },
-        channel_ref::ChannelRef,
         privacy::Privacy,
         Resource, RscPart,
     },
+    request::channel::ChannelRequest,
 };
 
 type PartKey = <RscType as Resource>::PartKey;
 
 #[derive(Clone, Debug)]
-pub struct StatusRef<'yt>(ChannelRef<'yt>);
+pub struct StatusRequest<'yt>(ChannelRequest<'yt>);
 
-impl<'yt> StatusRef<'yt>
+impl<'yt> StatusRequest<'yt>
 {
     pub async fn privacy(
         &self
@@ -40,7 +40,7 @@ impl<'yt> StatusRef<'yt>
 }
 
 impl RscPart<RscType>
-for StatusRef<'_>
+for StatusRequest<'_>
 {
     type Backing = ChannelStatus;
 
@@ -48,11 +48,11 @@ for StatusRef<'_>
     const PART_KEY: PartKey = PartKey::Status;
 }
 
-impl<'yt> From<ChannelRef<'yt>>
-for StatusRef<'yt>
+impl<'yt> From<ChannelRequest<'yt>>
+for StatusRequest<'yt>
 {
     fn from(
-        value: ChannelRef<'yt>
+        value: ChannelRequest<'yt>
     ) -> Self {
         Self(value)
     }

@@ -6,18 +6,18 @@ use crate::{
             Channel as RscType,
             ChannelSnippet,
         },
-        channel_ref::ChannelRef,
         thumbnail::ThumbnailList,
         Resource, RscPart,
     },
+    request::channel::ChannelRequest,
 };
 
 type PartKey = <RscType as Resource>::PartKey;
 
 #[derive(Clone, Debug)]
-pub struct SnippetRef<'yt>(ChannelRef<'yt>);
+pub struct SnippetRequest<'yt>(ChannelRequest<'yt>);
 
-impl<'yt> SnippetRef<'yt>
+impl<'yt> SnippetRequest<'yt>
 {
     pub async fn title(
         &self
@@ -61,18 +61,18 @@ impl<'yt> SnippetRef<'yt>
 }
 
 impl RscPart<RscType>
-for SnippetRef<'_> {
+for SnippetRequest<'_> {
     type Backing = ChannelSnippet;
 
     const PART_NAME: &'static str = "snippet";
     const PART_KEY: PartKey = PartKey::Snippet;
 }
 
-impl<'yt> From<ChannelRef<'yt>>
-for SnippetRef<'yt>
+impl<'yt> From<ChannelRequest<'yt>>
+for SnippetRequest<'yt>
 {
     fn from(
-        value: ChannelRef<'yt>
+        value: ChannelRequest<'yt>
     ) -> Self {
         Self(value)
     }

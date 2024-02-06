@@ -1,6 +1,11 @@
-use std::ops::Deref;
+use crate::resources::{
+    playlist::Playlist as RscType,
+    Resource, RscPart,
+};
 
 use serde::{Deserialize, Serialize};
+
+type PartKey = <RscType as Resource>::PartKey;
 
 #[derive(Clone, Debug, Default)]
 #[derive(Hash, PartialEq, Eq)]
@@ -24,11 +29,11 @@ where crate::IdType: AsRef<T>
     fn as_ref(
         &self
     ) -> &T {
-        self.deref().as_ref()
+        self.0.as_ref()
     }
 }
 
-impl Deref
+impl std::ops::Deref
 for PlaylistId
 {
     type Target = crate::IdType;
@@ -38,4 +43,26 @@ for PlaylistId
     ) -> &Self::Target {
         &self.0
     }
+}
+
+impl std::fmt::Display
+for PlaylistId
+where crate::IdType:
+    std::fmt::Display
+{
+    fn fmt(
+        &self,
+        f: &mut std::fmt::Formatter<'_>
+    ) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
+impl RscPart<RscType>
+for PlaylistId
+{
+    type Backing = Self;
+
+    const PART_KEY: <RscType as Resource>::PartKey = PartKey::Id;
+    const PART_NAME: &'static str = "id";
 }

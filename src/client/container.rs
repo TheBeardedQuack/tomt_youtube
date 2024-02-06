@@ -29,7 +29,7 @@ pub trait RscHolder<R: Resource>
 
 // For this site each list will be relatively small, just using a vec.
 // We can rip through the array when inserting to prevent dupes
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct RscContainer<R: Resource>
 {
     items: HashMap<R::Id, R>,

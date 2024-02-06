@@ -12,9 +12,9 @@ use crate::{
          YtError,
          PANIC_LOCK_POISONED,
     },
+    request::channel::*,
     resources::{
         channel::*,
-        channel_ref::*,
         Resource,
     }
 };
@@ -68,33 +68,35 @@ impl YouTubeClient
     pub fn channel(
         &self,
         id: ChannelId
-    ) -> ChannelRef {
-        ChannelRef::new(self, id)
+    ) -> ChannelRequest {
+        ChannelRequest::new(self, id)
     }
 
     async fn fetch_channels(
         &self
     ) -> Result<ResponsePacket<Channel>, YtError> {
-        let (mut channels_lock, url) = {
+        let (backup, url) = {
             let mut url = Url::parse(&format!(
                 "{}/{}",
                 Self::BASE_URL,
                 Channel::RSC_NAME
             )).expect(Self::PANIC_BAD_URL);
-            let channels_lock = self.channels.write().expect(PANIC_LOCK_POISONED);
+            let (backup, ids, parts) = {
+                let mut channels_wlock = self.channels.write().expect(PANIC_LOCK_POISONED);
 
-            let (ids, parts) = {
-                let ids = channels_lock.pending_ids()
-                    .map(|s| s.as_str())
-                    .collect::<Vec<_>>()
-                    .join(",");
-
-                let parts = channels_lock.pending_parts()
+                let ids = channels_wlock.pending_ids()
                     .map(ToString::to_string)
                     .collect::<Vec<_>>()
                     .join(",");
 
-                (ids, parts)
+                let parts = channels_wlock.pending_parts()
+                    .map(ToString::to_string)
+                    .collect::<Vec<_>>()
+                    .join(",");
+
+                let backup = channels_wlock.clone();
+                channels_wlock.clear_pending();
+                (backup, ids, parts)
             };
 
             url.query_pairs_mut()
@@ -109,12 +111,25 @@ impl YouTubeClient
                 _ => todo!("Authentication method not yet supported"),
             };
 
-            (channels_lock, url)
+            (backup, url)
         };
 
-        let text = self.ht_client.get(url)
-            .send().await?
-            .text().await?;
+        let text = match self.ht_client.get(url).send().await
+        {
+            Ok(response) => response.text().await?,
+            Err(err) => {
+                let mut channels_wlock = self.channels.write().expect(PANIC_LOCK_POISONED);
+
+                for id in backup.pending_ids() {
+                    channels_wlock.touch_id(id);
+                }
+                for part in backup.pending_parts() {
+                    channels_wlock.touch_part(*part);
+                }
+
+                Err(err)?
+            },
+        };
 
         let page = match serde_json::from_str::<ResponsePacket<Channel>>(&text) {
             Ok(page) => page,
@@ -124,11 +139,14 @@ impl YouTubeClient
         };
 
         // Merge response data into existing data
-        for item in page.items.iter() {
-            channels_lock.entry(item.id().clone())
-                .or_insert_with(|| Channel::with_id(item.id().clone()))
-                .update(item.clone())
-                .ok();
+        {
+            let mut channels_wlock = self.channels.write().expect(PANIC_LOCK_POISONED);
+            for item in page.items.iter() {
+                channels_wlock.entry(item.id().clone())
+                    .or_insert_with(|| Channel::with_id(item.id().clone()))
+                    .update(item.clone())
+                    .ok();
+            }
         }
 
         Ok(page)
